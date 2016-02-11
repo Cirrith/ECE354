@@ -11,7 +11,7 @@
 * CS Login: bambrough
 * Section: 1
 *
-* Pair Partner: Jason Hsu
+* Pair Partner: Cheng-Hsiang
 * Email: hsu39@wisc.edu
 * CS Login: cheng-hsiang
 * Section: 1
@@ -174,10 +174,18 @@ int main(int argc, char *argv[])
 
 
 }
-
+/**
+ * This function takes in an integer array and the size of the integer 
+ * array then it uses the add_item_at_start(struct node *head, int data)
+ * function to create a list.
+ *
+ * @param intarray[ ]: An integer array to be used for creating the list
+ * @param len: The length of the integer array
+ * @return The head of the created linked list.
+ */
 struct node* create_list(int intarray[], int len)
 {
-    if(len == 0)
+    if(len == 0) 
     {
         return NULL;
     }
@@ -203,7 +211,14 @@ struct node* create_list(int intarray[], int len)
     return head;
 }
 
-
+/**
+ * This function takes in a pointer pointing to the head of a linked
+ * list and an integer to be added at the beginning of the list.
+ *
+ * @param head: The pointer to the head of the linked list to be addded an item to.
+ * @param data: The integer to be added to the beginning of the list.
+ * @return The head of the newly updated linked list.
+ */
 struct node* add_item_at_start(struct node *head, int data)
 {
     struct node* start = (struct node*)malloc(sizeof(struct node));
@@ -214,6 +229,16 @@ struct node* add_item_at_start(struct node *head, int data)
     return start;
 }
 
+
+/**
+ * This function takes in a pointer pointing to the head of a linked
+ * list and an integer to be searched in the list. It searches the linked list
+ * and see if the integer is found. Position value ranges from 1 to n.
+ *
+ * @param head: The pointer to the head of the linked list to be searched.
+ * @param element: The integer to be searched in the list.
+ * @return The position of the element being found in the list, otherwise returns -1.
+ */
 int search_list(struct node *head, int element) //****************
 {
     struct node *current;
@@ -238,7 +263,16 @@ int search_list(struct node *head, int element) //****************
     return -1; //Element not found
 
 }
-
+/**
+ * This function takes in an integer array, the number of integers, and  
+ * the integer to be searched in the array. It searches the array 
+ * and see if the integer is found.
+ *
+ * @param integers []: An integer array to be searched.
+ * @param numints: The number of integers in the integer array.
+ * @param element: The integer to be searched in the integer array.
+ * @return The position of the element being found in the array, otherwise returns -1.
+ */
 int search_array(int integers[], int numints, int element)
 {
     int i;
@@ -252,7 +286,15 @@ int search_array(int integers[], int numints, int element)
     
     return -1; //Element not found
 }
-
+/**
+ * This function takes in a pointer to the head of the list, and a pointer 
+ * to the integer array. It copies the content of the linked list to the array  
+ * and count how many integers being copied to the array.
+ *
+ * @param head []: The head to the linked list.
+ * @param array: A pointer pointing to the first integer in the integer array.
+ * @return The number of integers being copied from the list to the array.
+ */
 int copy_list_to_array(struct node *head, int *array)
 {
     struct node *current;
@@ -271,7 +313,13 @@ int copy_list_to_array(struct node *head, int *array)
     i++;
     return i;
 }
-
+/**
+ * This function takes in a pointer to the head of the linked list to be sorted 
+ * and return the head of the sorted linked list.
+ *
+ * @param head []: The head to the linked list going to be sorted.
+ * @return The head of the sorted linked list.
+ */
 struct node* create_sorted_list(struct node *head)
 {
     if(head == NULL) //No head means no list
