@@ -52,11 +52,11 @@ int main(int argc, char *argv[])
     FILE *output;
     char buffer[100];
     int inputs[MAX_INTS];
-    int length = 0;
+    int length;
 
     if(argc != 2)
     {
-        printf("The Input Arguments was bad");
+        printf("The Input Arguments was bad\n");
         exit(1);
     }
 
@@ -66,13 +66,13 @@ int main(int argc, char *argv[])
 
     if(input == NULL)
     {
-        printf("Error in File Opening");
+        printf("Error in File Opening\n");
         exit(1);
     }
 
 
     /* Read the numbers from the file, into an array */
-    for(length; fgets(buffer, 100, input) != NULL; length++)
+    for(length = 0; fgets(buffer, 100, input) != NULL; length++)
     { 
         inputs[length] = atoi(buffer);
     }
@@ -81,15 +81,19 @@ int main(int argc, char *argv[])
 
 
    /* Print the array */
+    printf("Array: ");
     print_array(inputs, length);
-    
+    printf("\n");
+
 
     /* Create a linked list with the integers from the array */
     struct node *head = create_list(inputs, length);
     
 
     /* Print the linked list */
+    printf("Linked List: ");
     print_list(head);
+    printf("\n");
 
 
     /* Repeatedly prompt the user for a number to be searched.
@@ -100,8 +104,8 @@ int main(int argc, char *argv[])
     char in[256];
     while(1)
     {
-        printf("\nEnter an element to be searched in the list and array: ");
-        scanf(" %s", &in);
+        printf("Enter an element to be searched in the list and array: ");
+        scanf(" %s", in);
 
         if(in[0] == 'q')
             break;
@@ -111,13 +115,13 @@ int main(int argc, char *argv[])
 
         if(index_array == -1 || index_list == -1)
         {
-            printf("\nElement %d not found in array.", atoi(in));
-	    printf("\nElement %d not found in list.", atoi(in));
+            printf("\nElement %d not found in array.\n", atoi(in));
+	    printf("\nElement %d not found in list.\n\n", atoi(in));
         }
         else
         {
-            printf("\nElement %d found in the array at index: %d", atoi(in), index_array);
-            printf("\nElement %d found in the list at index: %d", atoi(in), index_list);
+            printf("\nElement %d found in the array at index: %d\n", atoi(in), index_array);
+            printf("\nElement %d found in the list at index: %d\n\n", atoi(in), index_list);
         }
     }
 
@@ -127,7 +131,9 @@ int main(int argc, char *argv[])
 
 
     /* Print the sorted list */
+    printf("\nSorted Linked List: ");
     print_list(sorted_list);
+    printf("\n");
 
 
     /* Copy the sorted list to an array with the same sorted order */
@@ -137,15 +143,21 @@ int main(int argc, char *argv[])
 
 
     /* Print out the sorted array */
+    printf("Sorted Array: ");
     print_array(sorted_array, sorted_length);    
+    printf("\n");
 
 
     /* Print the original linked list again */
+    printf("Original Linked List: ");
     print_list(head);
+    printf("\n");
 
 
     /* Print the original array again */
+    printf("Original Array: ");
     print_array(inputs, length);
+    printf("\n");
 
 
     /* Open a file for writing */
@@ -153,7 +165,7 @@ int main(int argc, char *argv[])
 
     if(output == NULL)
     {
-       printf("The output file is NULL");
+       printf("The output file is NULL\n");
     }
 
 
@@ -168,11 +180,11 @@ int main(int argc, char *argv[])
 
 
     /* Print out the number of integers written to the file */
-    printf("We printed %d integers to file", j);
+    printf("We printed %d integers to file\n", j);
 
     fclose(output);
 
-
+    return 0;
 }
 /**
  * This function takes in an integer array and the size of the integer 
@@ -249,7 +261,7 @@ int search_list(struct node *head, int element) //****************
     {
         if((*current).data == element)
         {
-            return i; //Element found in body of list
+            return ++i; //Element found in body of list
         }
         current = (*current).next;
         i++;
@@ -257,7 +269,7 @@ int search_list(struct node *head, int element) //****************
     
     if((*current).data == element)
     {
-        return i++; //Element found at end of list
+        return ++i; //Element found at end of list
     }
 
     return -1; //Element not found
