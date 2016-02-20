@@ -210,7 +210,7 @@ int isNegative(int x) {
  */
 int sign(int x) {
   int pos = !(x >> 31);
-  int neg = ~(!!(x >> 31)) + 1;
+  int neg = !!(~(x >> 31) + 1);
   int zer = !x;
 
     return (pos ^ zer) + neg;

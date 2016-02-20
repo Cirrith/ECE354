@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main()
+{
+int x = 20;
+int y = 10;
+
+printf("Two different: %d", (x ^ y));
+printf("Two same: %d,", (x ^ x));
+
+return 0;
+}
