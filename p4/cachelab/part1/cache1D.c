@@ -1,14 +1,9 @@
+int arr[100000];
 
 int main ( int argc, const char* argv [] )
 {
-	int cache[100000] = NULL;
-	
-	for(int i = 0; i < sizeof(cache); i++)
+	for(int i = 0; i < 100000; i++)
 	{
-		cache[0] = 0;
-		
+		arr[i] = i;
 	}
-	
-	
-	
 }

@@ -1,7 +1,7 @@
-/* Name:
- * Partner's name:
- * CS logins:
- * Section(s):
+/* Name: Ryan Bambrough
+ * Partner's name: Cheng-Hsiang Hsu
+ * CS logins: cheng-hsiang, bambrough
+ * Section(s): 1
  *
  *
  *
@@ -77,6 +77,7 @@ typedef unsigned long long int mem_addr_t;
 typedef struct cache_line {
     char valid;
     mem_addr_t tag;
+	struct cache_line *next;
 } cache_line_t;
 
 typedef cache_line_t* cache_set_t;
@@ -96,7 +97,35 @@ cache_t cache;
  */
 void initCache()
 {
-
+	S = 2^s;
+	cache = (cache_t)malloc(S*sizeof(cache_set_t));
+	for (int i = 0; i < S; i++)
+	{
+		cache_line_t *head = NULL;
+		
+		for (int j = 0; j < E; j++)
+		{
+			cache_line_t *line_new = (cache_line_t *) malloc(sizeof(cache_line_t));
+			line_new->valid = 0;
+			line_new->tag = 0;
+			line_new->next = NULL;
+			
+			if(head == NULL)
+			{
+				head = line_new;
+			}
+			else
+			{
+				cache_line_t *curr = head;
+				while(curr->next != NULL)
+				{
+					curr = curr->next;
+				}
+				curr->next = line_new;
+			}
+		}
+			cache[i] = head;
+	}
 }
 
 
@@ -106,7 +135,21 @@ void initCache()
  */
 void freeCache()
 {
-
+	for (int i = 0; i < S; i++)
+	{
+		cache_line_t *head = cache[i];
+		
+		for (int j = 0; j < E; j++)
+		{
+			cache_line_t *curr = head;
+			
+			while(curr->next != NULL)
+			{
+				curr = curr->next;
+			}
+			free(curr);
+		}		
+	}
 }
 
 
@@ -121,9 +164,43 @@ void freeCache()
  */
 void accessData(mem_addr_t addr)
 {
-
+	mem_addr_t mask_t = (63-s-b)<<(s+b);
+	mem_addr_t tag = mask_t & addr;
+	mem_addr_t mask_s = (mem_addr_t)(pow(2,s)-1)<<b;
+	int set = (int)(mask_s & addr) >> b;
+	cache_line_t *head = cache[set];
+	cache_line_t *curr = head;
+	cache_line_t *prev = NULL;
+	while(curr->next != NULL)
+	{
+		if((curr->tag == tag) & (curr->valid == 1)) //Cache hit, increment and stuff
+		{
+			hit_count++;
+			if(curr != head)
+			{
+				prev->next = curr->next;
+				curr->next = head;
+				cache[set] = curr;
+			}
+			return;
+		}
+		else
+		{
+			prev = curr;
+			curr = curr->next;	//Move to next line
+		}
+	}
+	if(curr->valid == 1)
+	{
+		eviction_count++;
+	}
+	prev->next = NULL;			//Cache miss
+	curr->tag = tag;
+	curr->valid = 1;
+	curr->next = head;
+	cache[set] = curr;
+	miss_count++;
 }
-
 
 /* TODO - FILL IN THE MISSING CODE
  * replayTrace - replays the given trace file against the cache 
@@ -153,6 +230,9 @@ void replayTrace(char* trace_fn)
             if(verbosity)
                 printf("%c %llx,%u ", buf[1], addr, len);
 
+			if(buf[1] =='M')
+				accessData(addr);
+			accessData(addr);
            // TODO - MISSING CODE
            // now you have: 
            // 1. address accessed in variable - addr 
