@@ -77,7 +77,7 @@ typedef unsigned long long int mem_addr_t;
 typedef struct cache_line {
     char valid;
     mem_addr_t tag;
-	struct cache_line *next;
+    struct cache_line *next;
 } cache_line_t;
 
 typedef cache_line_t* cache_set_t;
@@ -97,16 +97,18 @@ cache_t cache;
  */
 void initCache()
 {
-	S = 2^s;
-	cache = (cache_t)malloc(S*sizeof(cache_set_t));
+	S = pow(2,s);
+	cache = (cache_set_t*) malloc(S*sizeof(cache_set_t*));
+
 	for (int i = 0; i < S; i++)
 	{
 		cache_line_t *head = NULL;
 		
 		for (int j = 0; j < E; j++)
 		{
+			//allocate a single new line
 			cache_line_t *line_new = (cache_line_t *) malloc(sizeof(cache_line_t));
-			line_new->valid = 0;
+			line_new->valid = (char)0;
 			line_new->tag = 0;
 			line_new->next = NULL;
 			
@@ -124,7 +126,8 @@ void initCache()
 				curr->next = line_new;
 			}
 		}
-			cache[i] = head;
+		// Assign the head to the cache set
+		cache[i] = head;
 	}
 }
 
@@ -142,10 +145,16 @@ void freeCache()
 		for (int j = 0; j < E; j++)
 		{
 			cache_line_t *curr = head;
+			cache_line_t *prev = NULL;
 			
 			while(curr->next != NULL)
 			{
+				prev = curr;
 				curr = curr->next;
+			}
+			if(prev != NULL)
+			{
+				prev->next = NULL;
 			}
 			free(curr);
 		}		
@@ -164,24 +173,68 @@ void freeCache()
  */
 void accessData(mem_addr_t addr)
 {
-	mem_addr_t mask_t = (63-s-b)<<(s+b);
-	mem_addr_t tag = mask_t & addr;
-	mem_addr_t mask_s = (mem_addr_t)(pow(2,s)-1)<<b;
-	int set = (int)(mask_s & addr) >> b;
+	mem_addr_t tag = (mem_addr_t)addr >> (s+b);
+	long long int mask_s = (long long int)((S-1) << b);
+	int set = (int) ((long long int)mask_s & ((long long int)addr)) >> b;	
 	cache_line_t *head = cache[set];
 	cache_line_t *curr = head;
-	cache_line_t *prev = NULL;
-	while(curr->next != NULL)
+	cache_line_t *prev = NULL; 
+	
+	if(E == 1) //Catch the Direct Mapped Case
 	{
-		if((curr->tag == tag) & (curr->valid == 1)) //Cache hit, increment and stuff
+		if((curr->tag == tag) && (curr->valid == (char) 1))
 		{
 			hit_count++;
-			if(curr != head)
+		}
+		else
+		{
+			if(curr->valid == (char)1)
+			{
+				eviction_count++;
+			}
+			miss_count++;
+			curr->valid = (char)1;
+			curr->tag = tag;
+			cache[set] = curr;
+		}
+		return;
+	}
+	
+ 	while(curr->next != NULL)
+	{
+		if((curr->tag == tag) && (curr->valid == (char) 1)) //Cache hit, increment and stuff
+		{
+			printf("Hit\n");
+			hit_count++;
+			if(curr == head)
+			{
+				//DO nothing. you all good
+			}
+			else
 			{
 				prev->next = curr->next;
 				curr->next = head;
 				cache[set] = curr;
 			}
+			return;
+		}
+		else if(curr->valid == (char)0)//Cold Case
+		{
+			if(curr == head)
+			{
+				curr->tag = tag;
+				curr->valid = (char) 1;
+			}
+			else
+			{
+				prev->next = curr->next;
+				curr->tag = tag;
+				curr->valid = (char) 1;
+				curr->next = head;
+				cache[set] = curr;
+			}
+			printf("Miss\n");
+			miss_count++;
 			return;
 		}
 		else
@@ -190,16 +243,27 @@ void accessData(mem_addr_t addr)
 			curr = curr->next;	//Move to next line
 		}
 	}
-	if(curr->valid == 1)
+	if((curr->tag == tag) & (curr->valid == (char)1))
+	{
+		prev->next = curr->next;
+		curr->next = head;
+		cache[set] = curr;
+		hit_count++;
+		return;
+	}
+	if(curr->valid == (char) 1)
 	{
 		eviction_count++;
+		printf("Eviction");
 	}
+	printf("Miss\n");
 	prev->next = NULL;			//Cache miss
 	curr->tag = tag;
-	curr->valid = 1;
+	curr->valid = (char)1;
 	curr->next = head;
 	cache[set] = curr;
 	miss_count++;
+	return;
 }
 
 /* TODO - FILL IN THE MISSING CODE
@@ -231,7 +295,9 @@ void replayTrace(char* trace_fn)
                 printf("%c %llx,%u ", buf[1], addr, len);
 
 			if(buf[1] =='M')
+			{
 				accessData(addr);
+			}
 			accessData(addr);
            // TODO - MISSING CODE
            // now you have: 
