@@ -1,0 +1,107 @@
+Ryan Bambrough & Cheng-Hsiang Hsu
+section 1
+
+Assignment 4 questions.
+Do not remove the questions from this file.
+Please indent your answers.
+
+Sample command line:
+/p/course/cs354-common/public/cache/pin -t /p/course/cs354-common/public/cache/source/tools/Memory/obj-ia32/allcache.so -is 16384 -ia 1 -ib 64 -ds 16384 -da 1 -db 64 -- yourexe
+
+Replace "yourexe" with the name of your executable.
+
+For ALL cache simulations, use a capacity of 16384 bytes for both 
+the I-cache and the D-cache.
+
+cache1D
+-------
+
+1.1 What do you get from running pin with a block size of 4 bytes? (Pasting the output here is fine!)
+	Instruction cache misses:       696
+	Instruction cache references:   695399
+	Data cache misses:              107246
+	Data cache references:          646430
+
+
+1.2 Calculate the hit ratio for the D-cache with a block size of 4 bytes?
+	1 - 107246/646430 = .8340
+	
+2.1 What do you get from running pin with a block size of 32 bytes? (Pasting the output here is fine!)
+	Instruction cache misses:       697
+	Instruction cache references:   695399
+	Data cache misses:              15372
+	Data cache references:          646430
+
+
+2.2 Calculate the hit ratio for the D-cache with a block size of 32 bytes?
+	1 - 15372/646430 = .9762
+
+3.1 What do you get from running pin with a block size of 64 bytes? (Pasting the output here is fine!)
+	Instruction cache misses:       689
+	Instruction cache references:   695399
+	Data cache misses:              8934
+	Data cache references:          646430
+
+	
+3.2 Calculate the hit ratio for the D-cache with a block size of 64 bytes?
+	1 - 8934/646430 = .9862
+
+4. (to be answered without running pin)
+   For this question, assume that the 100,000 elements long integer array that you allocated starts at address 0x50000000 in memory,
+   the size of an integer is 4 bytes  and the D-cache is initially empty. 
+   As you READ the integers in the array one-by-one, starting at index 0, 
+   how many D-cache misses will you see for reading the first 40 integers when the cache block size is:
+   a) 4 bytes: 40
+   b) 32 bytes: 5
+   c) 64 bytes: 3
+
+5. Based on simulations you ran for questions 1, 2 and 3, which block size is best for the D-cache?  Why? In what way does the block 
+   size affect the hit ratio for this program?
+	The one with a block size of 64 bytes was best because it load more of the next sequential blocks when it gets a cache miss. 
+	So when it misses the first one it loads the value it missed the next 15 values, making the next 15 sequential values hits.
+
+cache2Drows
+-----------
+
+6.1 What do you get from running pin with a block size of 64 bytes? (Pasting the output here is fine!)
+	Instruction cache misses:       690
+	Instruction cache references:   18122422
+	Data cache misses:              106860
+	Data cache references:          13567436
+
+
+6.2 Calculate the hit ratio for the D-cache with a block size of 64 bytes?
+	1 - 106860/13567436 = .9921
+
+cache2Dcols
+-----------
+
+7.1 What do you get from running pin with a block size of 64 bytes? (Pasting the output here is fine!)
+	Instruction cache misses:       690
+	Instruction cache references:   18099922
+	Data cache misses:              1507308
+	Data cache references:          13549936
+
+
+7.2 Calculate the hit ratio for the D-cache with a block size of 64 bytes?
+	1 - 1507308/13549936 = .8887
+
+Comparison of cache2Drows and cache2Dcols
+-----------------------------------------
+8. (to be answered without running pin) 
+    For this question, assume that the 2-D integer array you allocated starts at address 0x40000000 in memory,
+    the size of an integer is 4 bytes, D-cache block size is 64 bytes and the D-cache is initially empty.
+    As you READ the integers in the 2-D array one-by-one, starting with element array[0,0],
+    how many D-cache misses will you see for reading the first 10 integers in case of:
+    a) cache2Drows: 1
+    b) cache2Dcols: 10
+
+9. Compare the performance (hit ratios) of the D-cache for the 2 programs based on simulations of questions 6 and 7.
+    Explain any difference/ lack of difference that you observe. Your answer should be in the form of "There is a difference/no difference BECAUSE ____".
+	There is a difference BECAUSE the cols program isn't loading the data that is going to use next while the rows program, which has a better spacial 
+	locality, is loading the next 15-ish values that it will use.
+	
+
+
+
+
