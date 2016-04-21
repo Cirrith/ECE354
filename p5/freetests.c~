@@ -1,6 +1,4 @@
-/*
-Ryan Bambrough, section 1, Cheng-Hsiang Hsu, section 1
-*/
+
 #include <assert.h>
 #include <stdlib.h>
 #include "mem.h"
