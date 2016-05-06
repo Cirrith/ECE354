@@ -1,0 +1,31 @@
+Name/cs login/section: Ryan Bambrough/bambrough/section1
+Partner's Name/cs login/section: Cheng-Hsiang Hsu/cheng-hsiang/section1
+
+
+Q1
+Write the commands you used for performing steps 1, 6 and 11:
+ 1) gcc -E prog1.c -o prog1.i -m32 -Wall -std=gnu99 
+ 6) gcc -c -o calc.o calc.s -m32 -Wall -std=gnu99
+11) gcc -Wall -m32 -o prog2 calc.o prog2.o -std=gnu99
+
+
+Q2
+Necessary steps (among 1~11) to ensure prog2's correctness after changing
+calc.c: (Numbers only, not the commands.)
+4, 5, 6, 11
+
+Q3
+Necessary steps (among 1~11) after changing calc.h: (Numbers only.)
+4, 5, 6, 11
+
+Q4
+Copy the line you added to prog2.c here:
+extern int num_err;
+
+Q5
+Yes/No: 
+If yes, copy the lines added here:
+
+If no, explain here:
+The modifier static makes the variable local to its file structure. In other words, 
+only accessible to the file where it is declared/defined in. 
